@@ -141,6 +141,18 @@ export class UsersComponent {
   }
 
   handleOk(): void {
+    if (this.user.email.length === 0 || this.user.first_name.length === 0 || this.user.last_name.length === 0) {
+      this.modal.error({
+        nzTitle: 'Error',
+        nzContent: 'All fields are required',
+        nzOkText: 'Ok',
+        nzOkType: 'primary',
+        nzOkDanger: false,
+        nzOnOk: () => console.log('Ok')
+      });
+      return;
+    }
+
     this.isOkLoading = true;
     if (!this.isEditing) {
       this.usersService.createUser(this.user).subscribe({
