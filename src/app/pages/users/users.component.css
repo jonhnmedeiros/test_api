@@ -1,0 +1,14 @@
+.navigationTable {
+    display: flex;
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+    border-spacing: 0;
+    border: 1px solid #ddd;
+    align-items: center;
+}
+
+input {
+    width: 100%;
+
+}

@@ -1,0 +1,14 @@
+<h1>User Detail</h1>
+
+<div *ngIf="loader; else elseBlock">
+    <h3>Loading...</h3>
+</div>
+<ng-template #elseBlock>
+    <ng-container *ngIf="user">
+        <img [src]="user.avatar" alt="Avatar" width="100" height="100">
+        <h2>{{user.first_name}} {{user.last_name}}</h2>
+        <h3>{{user.email}}</h3>
+    </ng-container>
+</ng-template>
+
+<button nz-button nzType="default" (click)="goBack()">Back</button>

@@ -1,0 +1,64 @@
+<h1>Users</h1>
+
+<div *ngIf="loader; else elseBlock">
+    <h3>Loading...</h3>
+</div>
+<ng-template #elseBlock>
+    <nz-table #basicTable [nzData]="users" nzShowPagination="false">
+
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let user of users">
+                <td>{{user.first_name}} {{user.last_name}}</td>
+                <td>{{user.email}}</td>
+                <td>
+                    <a (click)="viewUser(user.id)">Details</a>
+                    <nz-divider nzType="vertical"></nz-divider>
+                    <a (click)="hadleEditUser(user)">Edit</a>
+                    <nz-divider nzType="vertical"></nz-divider>
+                    <a (click)="deleteUser(user.id, user.first_name + ' ' + user.last_name)">Delete</a>
+                </td>
+            </tr>
+        </tbody>
+    </nz-table>
+    <div class="navigationTable">
+        <button *ngIf="page > 1" nz-button nzType="default" (click)="changePage(page - 1)">Prev Page</button>
+        <button *ngIf="page < totalPages" nz-button nzType="default" (click)="changePage(page + 1)">Next Page</button>
+    </div>
+</ng-template>
+
+
+
+
+<nz-modal [(nzVisible)]="isVisible" nzTitle="Edit user" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()"
+    [nzOkLoading]="isOkLoading">
+
+    <form nz-form *nzModalContent>
+        <nz-form-item>
+            <nz-form-label [nzSpan]="6" nzRequired>First Name</nz-form-label>
+            <nz-form-control [nzSpan]="14">
+                <input nz-input [(ngModel)]="user.first_name" name="first_name" required>
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label [nzSpan]="6" nzRequired>Last Name</nz-form-label>
+            <nz-form-control [nzSpan]="14">
+                <input nz-input [(ngModel)]="user.last_name" name="last_name" required>
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label [nzSpan]="6" nzRequired>Email</nz-form-label>
+            <nz-form-control [nzSpan]="14">
+                <input nz-input [(ngModel)]="user.email" name="email" required>
+            </nz-form-control>
+        </nz-form-item>
+    </form>
+
+
+</nz-modal>
