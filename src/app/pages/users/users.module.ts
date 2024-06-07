@@ -10,6 +10,8 @@ import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { UserDetailComponent } from './user-detail/user-detail.component';
 import { FormsModule } from '@angular/forms';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzInputModule } from 'ng-zorro-antd/input';
 
 
 
@@ -22,6 +24,8 @@ import { FormsModule } from '@angular/forms';
     NzModalModule,
     NzFormModule,
     FormsModule,
+    NzButtonModule,
+    NzInputModule
   ],
   declarations: [UsersComponent, UserDetailComponent],
   exports: [UsersComponent]

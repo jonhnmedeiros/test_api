@@ -4,7 +4,9 @@
     <h3>Loading...</h3>
 </div>
 <ng-template #elseBlock>
-    <nz-table #basicTable [nzData]="users" nzShowPagination="false">
+    <input nz-input placeholder="Search by name" [(ngModel)]="search" (ngModelChange)="searchUser()">
+    <button nz-button nzType="primary" (click)="addUser()">Add user</button>
+    <nz-table #basicTable [nzData]="filteredUsers" nzShowPagination="false">
 
         <thead>
             <tr>
@@ -14,7 +16,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let user of users">
+            <tr *ngFor="let user of filteredUsers">
                 <td>{{user.first_name}} {{user.last_name}}</td>
                 <td>{{user.email}}</td>
                 <td>
@@ -36,7 +38,7 @@
 
 
 
-<nz-modal [(nzVisible)]="isVisible" nzTitle="Edit user" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()"
+<nz-modal [(nzVisible)]="isVisible" nzTitle="Update user" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()"
     [nzOkLoading]="isOkLoading">
 
     <form nz-form *nzModalContent>

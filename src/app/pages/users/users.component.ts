@@ -3,7 +3,6 @@ import { UsersService } from './users.service';
 import { User } from './user.model';
 import { Router } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { NzSpinModule } from 'ng-zorro-antd/spin';
 
 @Component({
   selector: 'app-users',
@@ -19,11 +18,15 @@ export class UsersComponent {
   }
 
   users: User[] = [];
+  filteredUsers: User[] = [];
   pages: number = 0;
   page: number = 1;
   totalPages: number = 0;
   usersResponse: any;
   loader: boolean = false;
+  search: string = '';
+
+  isEditing: boolean = false;
 
   // Modal Edit User
   isVisible = false;
@@ -42,6 +45,7 @@ export class UsersComponent {
       next: response => {
         this.usersResponse = response;
         this.users = response.data;
+        this.filteredUsers = response.data;
         this.pages = response.total_pages;
         this.totalPages = response.total_pages;
       },
@@ -64,6 +68,19 @@ export class UsersComponent {
   changePage(page: number) {
     this.page = page;
     this.getUsers();
+  }
+
+  searchUser() {
+    if (this.search.length > 0) {
+      this.filteredUsers = [];
+      this.users.find(user => {
+        if (user.first_name.toLowerCase().includes(this.search.toLowerCase()) || user.last_name.toLowerCase().includes(this.search.toLowerCase()) || user.email.toLowerCase().includes(this.search.toLowerCase())) {
+          this.filteredUsers.push(user);
+        }
+      });
+    } else {
+      this.filteredUsers = this.users;
+    }
   }
 
   viewUser(id: number) {
@@ -110,36 +127,73 @@ export class UsersComponent {
   hadleEditUser(user: User) {
     this.user = user;
     this.isVisible = true;
+    this.isEditing = true;
+  }
+
+  addUser() {
+    this.user = { id: 0, email: '', first_name: '', last_name: '', avatar: '' };
+    this.isVisible = true;
+    this.isEditing = false;
   }
 
   handleOk(): void {
     this.isOkLoading = true;
-    this.usersService.updateUser(this.user).subscribe({
-      error: () => {
-        this.modal.error({
-          nzTitle: 'Error',
-          nzContent: 'An error occurred while updating the user',
-          nzOkText: 'Ok',
-          nzOkType: 'primary',
-          nzOkDanger: false,
-          nzOnOk: () => console.log('Ok')
-        });
-      },
-      complete: () => {
-        this.isVisible = false;
-        this.isOkLoading = false;
-        const modalSucess = this.modal.success({
-          nzTitle: 'User updated successfully',
-          nzContent: 'User has been updated successfully',
-          nzOkText: 'Ok',
-          nzOkType: 'primary',
-          nzOkDanger: false,
-          nzOnOk: () => console.log('Ok')
-        });
-        setTimeout(() => modalSucess.destroy(), 2000);
-        this.getUsers();
-      }
-    });
+    if (!this.isEditing) {
+      this.usersService.createUser(this.user).subscribe({
+        error: () => {
+          this.modal.error({
+            nzTitle: 'Error',
+            nzContent: 'An error occurred while creating the user',
+            nzOkText: 'Ok',
+            nzOkType: 'primary',
+            nzOkDanger: false,
+            nzOnOk: () => console.log('Ok')
+          });
+        },
+        complete: () => {
+          this.isVisible = false;
+          this.isOkLoading = false;
+          const modalSucess = this.modal.success({
+            nzTitle: 'User created successfully',
+            nzContent: 'User has been created successfully',
+            nzOkText: 'Ok',
+            nzOkType: 'primary',
+            nzOkDanger: false,
+            nzOnOk: () => console.log('Ok')
+          });
+          setTimeout(() => modalSucess.destroy(), 2000);
+          this.getUsers();
+        }
+      });
+    } else {
+      this.usersService.updateUser(this.user).subscribe({
+        error: () => {
+          this.modal.error({
+            nzTitle: 'Error',
+            nzContent: 'An error occurred while updating the user',
+            nzOkText: 'Ok',
+            nzOkType: 'primary',
+            nzOkDanger: false,
+            nzOnOk: () => console.log('Ok')
+          });
+        },
+        complete: () => {
+          this.isVisible = false;
+          this.isOkLoading = false;
+          const modalSucess = this.modal.success({
+            nzTitle: 'User updated successfully',
+            nzContent: 'User has been updated successfully',
+            nzOkText: 'Ok',
+            nzOkType: 'primary',
+            nzOkDanger: false,
+            nzOnOk: () => console.log('Ok')
+          });
+          setTimeout(() => modalSucess.destroy(), 2000);
+          this.getUsers();
+        }
+      });
+    }
+
   }
 
   handleCancel(): void {
