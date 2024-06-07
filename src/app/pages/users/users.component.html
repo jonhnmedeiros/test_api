@@ -6,6 +6,8 @@
 <ng-template #elseBlock>
     <input nz-input placeholder="Search by name" [(ngModel)]="search" (ngModelChange)="searchUser()">
     <button nz-button nzType="primary" (click)="addUser()">Add user</button>
+    <button nz-button nzType="default" (click)="exportToPdf()">Export to PDF</button>
+    <button nz-button nzType="default" (click)="exportToExcel()">Export to Excel</button>
     <nz-table #basicTable [nzData]="filteredUsers" nzShowPagination="false">
 
         <thead>

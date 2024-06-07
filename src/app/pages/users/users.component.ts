@@ -3,6 +3,10 @@ import { UsersService } from './users.service';
 import { User } from './user.model';
 import { Router } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd/modal';
+import * as XLSX from 'xlsx';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+
 
 @Component({
   selector: 'app-users',
@@ -199,6 +203,53 @@ export class UsersComponent {
   handleCancel(): void {
     this.isVisible = false;
   }
+
+  exportToExcel() {
+    const data = this.filteredUsers;
+    const columns = this.getColumns(data);
+    const worksheet = XLSX.utils.json_to_sheet(data, { header: columns });
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+    XLSX.writeFile(workbook, 'data.xlsx');
+  }
+
+  exportToPdf() {
+    const data = this.filteredUsers;
+    const columns = this.getColumns(data);
+    const rows = this.getRows(data, columns);
+    const doc = new jsPDF();
+    autoTable(doc, {
+      head: [columns],
+      body: rows
+    });
+    doc.save('data.pdf');
+  }
+
+  getColumns(data: any[]): string[] {
+    const columns: string[] = [];
+    data.forEach(row => {
+      Object.keys(row).forEach(col => {
+        if (!columns.includes(col)) {
+          columns.push(col);
+        }
+      });
+    });
+    return columns;
+  }
+
+  getRows(data: any[], columns: string[]): any[] {
+    const rows: any[] = [];
+    data.forEach(row => {
+      const values: any[] = [];
+      columns.forEach(col => {
+        values.push(row[col] || '');
+      });
+      rows.push(values);
+    });
+    return rows;
+  }
+
+
 
   ngOnInit() {
     this.getUsers();
